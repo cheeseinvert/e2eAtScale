@@ -125,7 +125,9 @@ print(json.dumps(result, indent=2))
 
     # Load credentials from .env if present, else pass through from shell
     env_vars = _load_env_vars()
-
+    
+    # Always tell the handler where to store results
+    env_vars["RESULTS_STORE"]   = store
     # Conditionally pass AWS vars if writing to Dynamo
     if store in ("dynamo", "both"):
         for key in ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_DEFAULT_REGION"):
@@ -133,7 +135,6 @@ print(json.dumps(result, indent=2))
             if val:
                 env_vars[key] = val
         env_vars["RESULTS_TABLE"]   = DYNAMO_TABLE
-        env_vars["RESULTS_STORE"]   = store
 
     docker_cmd = [
         "docker", "run", "--rm",
