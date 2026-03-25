@@ -53,6 +53,5 @@ class DashboardPage(BasePage):
         self.click(self.USER_MENU)
         self.wait_for_selector(self.LOGOUT_OPTION)
         self.click(self.LOGOUT_OPTION)
-        # self.page.wait_for_url("**/login**", timeout=10000)
         # Hash-based SPA — wait for hash to return to login
         self.page.wait_for_function("window.location.hash === '#login'", timeout=10000)

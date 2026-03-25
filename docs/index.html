@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>e2eAtScale — Local Test Target</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Variables ────────────────────────────────────────────────── */
+    :root {
+      --navy:     #0D1B2A;
+      --steel:    #1B3A5C;
+      --teal:     #0E9AA7;
+      --mint:     #3AAFA9;
+      --gold:     #F4A731;
+      --white:    #FFFFFF;
+      --offwhite: #EFF6F6;
+      --light:    #B0CDD5;
+      --charcoal: #1E2D3D;
+      --error:    #E05252;
+      --success:  #2ECC71;
+      --card-bg:  #FFFFFF;
+      --card-border: #E2EEF0;
+      --text:     #1A2B38;
+      --muted:    #6B8A96;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--offwhite);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Utility ──────────────────────────────────────────────────── */
+    .hidden { display: none !important; }
+
+    /* ── Pages ────────────────────────────────────────────────────── */
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ================================================================
+       LOGIN PAGE
+    ================================================================ */
+    #login-page {
+      background: var(--navy);
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background geometry */
+    #login-page::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14,154,167,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    #login-page::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -80px;
+      width: 340px; height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(244,167,49,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .login-card {
+      background: var(--charcoal);
+      border: 1px solid rgba(14,154,167,0.25);
+      border-radius: 16px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 1;
+      animation: cardIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .login-logo-mark {
+      width: 36px; height: 36px;
+      background: var(--teal);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .login-logo-mark svg { width: 20px; height: 20px; fill: white; }
+
+    .login-logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.3px;
+    }
+
+    .login-logo-text span {
+      color: var(--teal);
+    }
+
+    .login-headline {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .login-sub {
+      font-size: 13px;
+      color: var(--light);
+      margin-bottom: 32px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(176,205,213,0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-family: 'DM Mono', monospace;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--teal);
+      background: rgba(14,154,167,0.08);
+    }
+
+    .form-input::placeholder { color: rgba(176,205,213,0.4); }
+
+    .error-banner {
+      background: rgba(224,82,82,0.15);
+      border: 1px solid rgba(224,82,82,0.4);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 13px;
+      color: #F08080;
+      margin-bottom: 18px;
+      font-family: 'DM Mono', monospace;
+      animation: shake 0.35s ease;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      margin-top: 4px;
+    }
+
+    .btn-primary:hover {
+      background: var(--mint);
+      box-shadow: 0 6px 20px rgba(14,154,167,0.35);
+    }
+
+    .btn-primary:active { transform: scale(0.98); }
+
+    .login-hint {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(176,205,213,0.1);
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .login-hint strong { color: var(--teal); }
+
+    /* ================================================================
+       DASHBOARD PAGE
+    ================================================================ */
+    #dashboard-page {
+      background: var(--offwhite);
+      flex-direction: column;
+    }
+
+    /* Top nav */
+    .nav {
+      background: var(--navy);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(14,154,167,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo-mark {
+      width: 28px; height: 28px;
+      background: var(--teal);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .nav-logo-mark svg { width: 16px; height: 16px; fill: white; }
+
+    .nav-brand-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .nav-brand-name span { color: var(--teal); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-user-label {
+      font-size: 12px;
+      color: var(--light);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .user-menu-btn {
+      background: rgba(14,154,167,0.15);
+      border: 1px solid rgba(14,154,167,0.3);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal);
+      font-family: 'Syne', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+      position: relative;
+    }
+
+    .user-menu-btn:hover { background: rgba(14,154,167,0.25); }
+
+    .user-menu-btn svg { width: 14px; height: 14px; fill: var(--teal); }
+
+    /* Dropdown */
+    .user-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--charcoal);
+      border: 1px solid rgba(14,154,167,0.25);
+      border-radius: 10px;
+      min-width: 160px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      overflow: hidden;
+      animation: dropIn 0.18s ease;
+    }
+
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item {
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--light);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s, color 0.15s;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .dropdown-item:hover { background: rgba(255,255,255,0.06); color: white; }
+
+    .dropdown-item.danger { color: #F08080; }
+    .dropdown-item.danger:hover { background: rgba(224,82,82,0.12); color: #F08080; }
+
+    .dropdown-item svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* Dashboard body */
+    .dashboard-body {
+      flex: 1;
+      padding: 36px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .dashboard-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    .dashboard-header-text h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .dashboard-header-text p {
+      font-size: 13px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .btn-create {
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-create:hover {
+      background: var(--mint);
+      box-shadow: 0 6px 20px rgba(14,154,167,0.3);
+    }
+
+    .btn-create svg { width: 16px; height: 16px; fill: white; }
+
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stat-icon svg { width: 22px; height: 22px; }
+
+    .stat-icon.teal { background: rgba(14,154,167,0.1); }
+    .stat-icon.teal svg { fill: var(--teal); }
+    .stat-icon.gold { background: rgba(244,167,49,0.1); }
+    .stat-icon.gold svg { fill: var(--gold); }
+    .stat-icon.navy { background: rgba(13,27,42,0.08); }
+    .stat-icon.navy svg { fill: var(--navy); }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    /* Section label */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* Room grid */
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .room-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+      animation: cardIn 0.35s cubic-bezier(0.22,1,0.36,1) both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .room-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: var(--teal);
+      border-radius: 4px 0 0 4px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .room-card:hover {
+      border-color: var(--teal);
+      box-shadow: 0 8px 24px rgba(14,154,167,0.12);
+      transform: translateY(-2px);
+    }
+
+    .room-card:hover::before { opacity: 1; }
+
+    .room-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+
+    .room-card-meta {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .room-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(14,154,167,0.1);
+      color: var(--teal);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-top: 12px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state svg {
+      width: 48px; height: 48px;
+      fill: var(--card-border);
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ================================================================
+       MODAL — Create Room
+    ================================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13,27,42,0.75);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .modal {
+      background: var(--charcoal);
+      border: 1px solid rgba(14,154,167,0.25);
+      border-radius: 14px;
+      padding: 36px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+      animation: cardIn 0.3s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+
+    .modal-sub {
+      font-size: 12px;
+      color: var(--light);
+      font-family: 'DM Mono', monospace;
+      margin-bottom: 24px;
+    }
+
+    .modal .form-input {
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-cancel {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(176,205,213,0.2);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--light);
+      font-family: 'Syne', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-cancel:hover { background: rgba(255,255,255,0.1); }
+
+    .btn-confirm {
+      flex: 2;
+      background: var(--teal);
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      font-family: 'Syne', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-confirm:hover { background: var(--mint); }
+
+    /* ================================================================
+       TEST BADGE — visible indicator for automation
+    ================================================================ */
+    .test-badge {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--navy);
+      border: 1px solid rgba(14,154,167,0.4);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: var(--teal);
+      z-index: 999;
+    }
+
+    .test-badge-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.85); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================================================================
+       LOGIN PAGE  (#login)
+  ================================================================ -->
+  <div id="login-page" class="page">
+    <div class="login-card">
+
+      <div class="login-logo">
+        <div class="login-logo-mark">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L20 8.5v7L12 19.82 4 15.5v-7L12 4.18z"/></svg>
+        </div>
+        <div class="login-logo-text">e2e<span>AtScale</span></div>
+      </div>
+
+      <div class="login-headline">Welcome back</div>
+      <div class="login-sub">Sign in to your workspace</div>
+
+      <div
+        data-testid="login-error"
+        class="error-banner hidden"
+        id="error-banner"
+      >Invalid email or password. Please try again.</div>
+
+      <div class="form-group">
+        <label class="form-label" for="email-input">Email</label>
+        <input
+          data-testid="email-input"
+          id="email-input"
+          class="form-input"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password-input">Password</label>
+        <input
+          data-testid="password-input"
+          id="password-input"
+          class="form-input"
+          type="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+        />
+      </div>
+
+      <button
+        data-testid="login-submit"
+        id="login-submit"
+        class="btn-primary"
+      >Sign In</button>
+
+      <div class="login-hint">
+        Test credentials:<br/>
+        <strong>any@email.com</strong> / <strong>password</strong>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ================================================================
+       DASHBOARD PAGE  (#dashboard)
+  ================================================================ -->
+  <div id="dashboard-page" class="page hidden">
+
+    <!-- Nav -->
+    <nav class="nav">
+      <div class="nav-brand">
+        <div class="nav-logo-mark">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L20 8.5v7L12 19.82 4 15.5v-7L12 4.18z"/></svg>
+        </div>
+        <div class="nav-brand-name">e2e<span>AtScale</span></div>
+      </div>
+
+      <div class="nav-right">
+        <span class="nav-user-label" id="nav-user-label"></span>
+
+        <div style="position:relative;">
+          <button
+            data-testid="user-menu"
+            id="user-menu-btn"
+            class="user-menu-btn"
+          >
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+            Account
+            <svg viewBox="0 0 24 24" style="width:10px;height:10px;"><path d="M7 10l5 5 5-5z"/></svg>
+          </button>
+
+          <div id="user-dropdown" class="user-dropdown hidden">
+            <div class="dropdown-item">
+              <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/></svg>
+              Profile
+            </div>
+            <div class="dropdown-item">
+              <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+              Settings
+            </div>
+            <div
+              data-testid="logout-option"
+              id="logout-option"
+              class="dropdown-item danger"
+            >
+              <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+              Sign out
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Body -->
+    <div class="dashboard-body">
+
+      <div class="dashboard-header-row">
+        <div class="dashboard-header-text">
+          <h1 data-testid="dashboard-header" id="dashboard-header">
+            Good morning 👋
+          </h1>
+          <p id="dashboard-sub">Your workspace is ready</p>
+        </div>
+        <button
+          data-testid="create-room-button"
+          id="create-room-btn"
+          class="btn-create"
+        >
+          <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          New Room
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon teal">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+          </div>
+          <div>
+            <div class="stat-value" id="stat-rooms">0</div>
+            <div class="stat-label">Rooms</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon gold">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+          <div>
+            <div class="stat-value">1</div>
+            <div class="stat-label">Active Users</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon navy">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+          </div>
+          <div>
+            <div class="stat-value">0</div>
+            <div class="stat-label">Active Sessions</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room list -->
+      <div class="section-label">Your Rooms</div>
+      <div class="rooms-grid" id="rooms-grid">
+        <div class="empty-state" id="empty-state">
+          <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+          <p>No rooms yet — create one to get started</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ================================================================
+       CREATE ROOM MODAL
+  ================================================================ -->
+  <div id="create-room-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-title">Create a Room</div>
+      <div class="modal-sub">Give your room a name to get started</div>
+
+      <input
+        data-testid="room-title-input"
+        id="room-title-input"
+        class="form-input"
+        type="text"
+        placeholder="e.g. Intro to Python"
+      />
+
+      <div class="modal-actions">
+        <button id="cancel-room-btn" class="btn-cancel">Cancel</button>
+        <button
+          data-testid="confirm-button"
+          id="confirm-room-btn"
+          class="btn-confirm"
+        >Create Room</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Test indicator badge -->
+  <div class="test-badge">
+    <div class="test-badge-dot"></div>
+    local test target · localhost
+  </div>
+
+
+  <!-- ================================================================
+       APP LOGIC
+  ================================================================ -->
+  <script>
+    // ── State ──────────────────────────────────────────────────────
+    let currentUser = null;
+    let rooms = [];
+
+    // Valid credentials — any email + "password"
+    const VALID_PASSWORD = 'password';
+
+    // ── Elements ───────────────────────────────────────────────────
+    const loginPage      = document.getElementById('login-page');
+    const dashboardPage  = document.getElementById('dashboard-page');
+    const emailInput     = document.getElementById('email-input');
+    const passwordInput  = document.getElementById('password-input');
+    const loginSubmit    = document.getElementById('login-submit');
+    const errorBanner    = document.getElementById('error-banner');
+    const dashHeader     = document.getElementById('dashboard-header');
+    const dashSub        = document.getElementById('dashboard-sub');
+    const navUserLabel   = document.getElementById('nav-user-label');
+    const userMenuBtn    = document.getElementById('user-menu-btn');
+    const userDropdown   = document.getElementById('user-dropdown');
+    const logoutOption   = document.getElementById('logout-option');
+    const createRoomBtn  = document.getElementById('create-room-btn');
+    const createModal    = document.getElementById('create-room-modal');
+    const roomTitleInput = document.getElementById('room-title-input');
+    const confirmRoomBtn = document.getElementById('confirm-room-btn');
+    const cancelRoomBtn  = document.getElementById('cancel-room-btn');
+    const roomsGrid      = document.getElementById('rooms-grid');
+    const emptyState     = document.getElementById('empty-state');
+    const statRooms      = document.getElementById('stat-rooms');
+
+    // ── Routing — use hash to support wait_for_url patterns ───────
+    function setRoute(route) {
+      window.location.hash = route;
+    }
+
+    function showLogin() {
+      loginPage.classList.remove('hidden');
+      dashboardPage.classList.add('hidden');
+      setRoute('login');
+      emailInput.value = '';
+      passwordInput.value = '';
+      errorBanner.classList.add('hidden');
+    }
+
+    function showDashboard(email) {
+      loginPage.classList.add('hidden');
+      dashboardPage.classList.remove('hidden');
+      setRoute('dashboard');
+      const name = email.split('@')[0];
+      const hour = new Date().getHours();
+      const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+      dashHeader.textContent = `${greeting}, ${name} 👋`;
+      dashSub.textContent = 'Your workspace is ready';
+      navUserLabel.textContent = email;
+      renderRooms();
+    }
+
+    // ── Login ──────────────────────────────────────────────────────
+    loginSubmit.addEventListener('click', handleLogin);
+    passwordInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleLogin();
+    });
+
+    function handleLogin() {
+      const email    = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showError('Please enter both email and password.');
+        return;
+      }
+
+      // Accept any email, password must be "password"
+      if (password === VALID_PASSWORD) {
+        currentUser = email;
+        errorBanner.classList.add('hidden');
+        showDashboard(email);
+      } else {
+        showError('Invalid email or password. Please try again.');
+      }
+    }
+
+    function showError(msg) {
+      errorBanner.textContent = msg;
+      errorBanner.classList.remove('hidden');
+      // Re-trigger animation
+      errorBanner.style.animation = 'none';
+      errorBanner.offsetHeight;
+      errorBanner.style.animation = '';
+    }
+
+    // ── User menu ─────────────────────────────────────────────────
+    userMenuBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', () => {
+      userDropdown.classList.add('hidden');
+    });
+
+    logoutOption.addEventListener('click', () => {
+      currentUser = null;
+      rooms = [];
+      userDropdown.classList.add('hidden');
+      showLogin();
+    });
+
+    // ── Create Room modal ─────────────────────────────────────────
+    createRoomBtn.addEventListener('click', () => {
+      roomTitleInput.value = '';
+      createModal.classList.remove('hidden');
+      setTimeout(() => roomTitleInput.focus(), 50);
+    });
+
+    cancelRoomBtn.addEventListener('click', () => {
+      createModal.classList.add('hidden');
+    });
+
+    confirmRoomBtn.addEventListener('click', handleCreateRoom);
+    roomTitleInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleCreateRoom();
+      if (e.key === 'Escape') createModal.classList.add('hidden');
+    });
+
+    function handleCreateRoom() {
+      const title = roomTitleInput.value.trim();
+      if (!title) return;
+      rooms.push({ title, id: Date.now(), created: new Date() });
+      createModal.classList.add('hidden');
+      renderRooms();
+    }
+
+    // ── Render rooms ──────────────────────────────────────────────
+    function renderRooms() {
+      // Remove existing cards (keep empty state el)
+      const existing = roomsGrid.querySelectorAll('[data-testid="room-card"]');
+      existing.forEach(el => el.remove());
+
+      statRooms.textContent = rooms.length;
+
+      if (rooms.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      rooms.forEach((room, i) => {
+        const card = document.createElement('div');
+        card.setAttribute('data-testid', 'room-card');
+        card.className = 'room-card';
+        card.style.animationDelay = `${i * 0.05}s`;
+        card.innerHTML = `
+          <div class="room-card-title">${escapeHtml(room.title)}</div>
+          <div class="room-card-meta">Created ${formatTime(room.created)}</div>
+          <div class="room-badge">● Ready</div>
+        `;
+        roomsGrid.appendChild(card);
+      });
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // ── Init ──────────────────────────────────────────────────────
+    showLogin();
+  </script>
+</body>
+</html>
