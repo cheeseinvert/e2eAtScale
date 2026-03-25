@@ -46,9 +46,9 @@ class TestLoginFlow:
         room_title = "Automated Test Room"
         dashboard.create_room(room_title)
 
-        assert dashboard.room_exists(room_title), (
-            f"Room '{room_title}' should appear in the dashboard after creation"
-        )
+        assert dashboard.room_exists(
+            room_title
+        ), f"Room '{room_title}' should appear in the dashboard after creation"
 
     def test_logout(self, page, credentials):
         """
@@ -63,9 +63,9 @@ class TestLoginFlow:
         dashboard.logout()
 
         # After logout, the URL should contain /login
-        assert "/login" in page.url, (
-            f"Expected redirect to login page after logout, got: {page.url}"
-        )
+        assert (
+            "login" in page.url
+        ), f"Expected redirect to login page after logout, got: {page.url}"
 
     def test_invalid_login_shows_error(self, page):
         """

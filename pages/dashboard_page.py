@@ -9,13 +9,13 @@ class DashboardPage(BasePage):
     """
 
     # Selectors
-    WELCOME_HEADER    = "[data-testid='dashboard-header']"
-    CREATE_ROOM_BTN   = "[data-testid='create-room-button']"
-    ROOM_TITLE_INPUT  = "[data-testid='room-title-input']"
-    CONFIRM_BTN       = "[data-testid='confirm-button']"
-    ROOM_CARD         = "[data-testid='room-card']"
-    USER_MENU         = "[data-testid='user-menu']"
-    LOGOUT_OPTION     = "[data-testid='logout-option']"
+    WELCOME_HEADER = "[data-testid='dashboard-header']"
+    CREATE_ROOM_BTN = "[data-testid='create-room-button']"
+    ROOM_TITLE_INPUT = "[data-testid='room-title-input']"
+    CONFIRM_BTN = "[data-testid='confirm-button']"
+    ROOM_CARD = "[data-testid='room-card']"
+    USER_MENU = "[data-testid='user-menu']"
+    LOGOUT_OPTION = "[data-testid='logout-option']"
 
     def __init__(self, page: Page):
         super().__init__(page)
@@ -43,9 +43,7 @@ class DashboardPage(BasePage):
         )
 
     def room_exists(self, title: str) -> bool:
-        return self.page.locator(
-            f"{self.ROOM_CARD}:has-text('{title}')"
-        ).count() > 0
+        return self.page.locator(f"{self.ROOM_CARD}:has-text('{title}')").count() > 0
 
     def logout(self):
         """
@@ -55,4 +53,6 @@ class DashboardPage(BasePage):
         self.click(self.USER_MENU)
         self.wait_for_selector(self.LOGOUT_OPTION)
         self.click(self.LOGOUT_OPTION)
-        self.page.wait_for_url("**/login**", timeout=10000)
+        # self.page.wait_for_url("**/login**", timeout=10000)
+        # Hash-based SPA — wait for hash to return to login
+        self.page.wait_for_function("window.location.hash === '#login'", timeout=10000)
