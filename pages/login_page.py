@@ -8,7 +8,8 @@ class LoginPage(BasePage):
     Encapsulates all selectors and actions related to authentication.
     """
 
-    URL = "http://localhost:8000/index.html#login"
+    URL = "https://app.example.com/login"
+    #URL = "http://localhost:8000/index.html#login"
 
     # Selectors — centralised here so changes to the DOM only require
     # updates in one place, not scattered across test files.
